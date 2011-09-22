@@ -253,9 +253,9 @@ var timeout = 500;
 
 function test_query_tables() {
 
-	azure.create_table(test_account, 'testquerytables', function(){
+	azure.tables.create_table(test_account, 'testquerytables', function(){
 		setTimeout(function(){
-			azure.query_tables(test_account, function(tables) {
+			azure.tables.query_tables(test_account, function(tables) {
 				var found = false;
 				for ( var i=0, len=tables.length; i<len; ++i ){
 					if (tables[i].TableName == 'testquerytables'){
@@ -263,21 +263,21 @@ function test_query_tables() {
 					}
 				}
 				assert.ok(found, 'test_query_tables');
-				azure.delete_table(test_account, 'testquerytables', function(x){});
+				azure.tables.delete_table(test_account, 'testquerytables', function(x){});
 			});
 		}, timeout)
 	});
 }
 
 function test_insert_entity() {
-	azure.create_table(test_account, 'testinserttable', function(y){
+	azure.tables.create_table(test_account, 'testinserttable', function(y){
 		setTimeout(function(){
-			azure.insert_entity(test_account, 'testinserttable', { RowKey:'123', PartitionKey: 'xyz', Value: 'foo' }, function(x) {
+			azure.tables.insert_entity(test_account, 'testinserttable', { RowKey:'123', PartitionKey: 'xyz', Value: 'foo' }, function(x) {
 				setTimeout(function(){
-					azure.get_entity(test_account, 'testinserttable', 'xyz', '123', function(entity){
+					azure.tables.get_entity(test_account, 'testinserttable', 'xyz', '123', function(entity){
 						assert.ok(entity.Value == 'foo', 'test_insert_entity');
 						
-						azure.delete_table(test_account, 'testinserttable', function(x){});
+						azure.tables.delete_table(test_account, 'testinserttable', function(x){});
 					});
 				}, timeout);
 			});
@@ -288,40 +288,40 @@ function test_insert_entity() {
 
 function test_query_entities() {
 
-	azure.create_table(test_account, 'testquerytable', function(){
+	azure.tables.create_table(test_account, 'testquerytable', function(){
 		setTimeout(function(){
-			azure.insert_entity(test_account, 'testquerytable', { RowKey:'1', PartitionKey: 'xyz', Value: 'foo' }, function(x) {});
-			azure.insert_entity(test_account, 'testquerytable', { RowKey:'2', PartitionKey: 'xyz', Value: 'foo' }, function(x) {});
-			azure.insert_entity(test_account, 'testquerytable', { RowKey:'3', PartitionKey: 'xyz', Value: 'bar' }, function(x) {});
-			azure.insert_entity(test_account, 'testquerytable', { RowKey:'4', PartitionKey: 'xyz', Value: 'bar' }, function(x) {});
-			azure.insert_entity(test_account, 'testquerytable', { RowKey:'5', PartitionKey: 'xyz', Value: 'bar' }, function(x) {});
-			azure.insert_entity(test_account, 'testquerytable', { RowKey:'6', PartitionKey: 'xyz', Value: 'baz' }, function(x) {});
+			azure.tables.insert_entity(test_account, 'testquerytable', { RowKey:'1', PartitionKey: 'xyz', Value: 'foo' }, function(x) {});
+			azure.tables.insert_entity(test_account, 'testquerytable', { RowKey:'2', PartitionKey: 'xyz', Value: 'foo' }, function(x) {});
+			azure.tables.insert_entity(test_account, 'testquerytable', { RowKey:'3', PartitionKey: 'xyz', Value: 'bar' }, function(x) {});
+			azure.tables.insert_entity(test_account, 'testquerytable', { RowKey:'4', PartitionKey: 'xyz', Value: 'bar' }, function(x) {});
+			azure.tables.insert_entity(test_account, 'testquerytable', { RowKey:'5', PartitionKey: 'xyz', Value: 'bar' }, function(x) {});
+			azure.tables.insert_entity(test_account, 'testquerytable', { RowKey:'6', PartitionKey: 'xyz', Value: 'baz' }, function(x) {});
 
 			setTimeout(function(){
-				azure.get_entity(test_account, 'testquerytable', 'xyz', '3', function(entity){
+				azure.tables.get_entity(test_account, 'testquerytable', 'xyz', '3', function(entity){
 					assert.ok(entity != undefined, 'test_query_entities get_entity is undefined');
 					assert.ok(entity.Value == 'bar', 'test_query_entities values is wrong');
 				});
 				
-				azure.get_entity(test_account, 'testquerytable', 'xyz', '7', function(entity){
+				azure.tables.get_entity(test_account, 'testquerytable', 'xyz', '7', function(entity){
 					assert.ok(entity == undefined, 'test_query_entities get_entity is not undefined');
 				});
 				
-				azure.query_entities(test_account, 'testquerytable', "Value+eq+'foo'", function(entities){
+				azure.tables.query_entities(test_account, 'testquerytable', "Value+eq+'foo'", function(entities){
 					assert.ok(entities.length == 2, 'test_query_entities query_entities');
 				});
 				
-				azure.query_entities(test_account, 'testquerytable', "Value+eq+'qux'", function(entities){
+				azure.tables.query_entities(test_account, 'testquerytable', "Value+eq+'qux'", function(entities){
 					assert.ok(entities.length == 0, 'test_query_entities query_entities');
 				});
 
-				azure.query_entities(test_account, 'testquerytable', "Value+eq+'baz'", function(entities){
+				azure.tables.query_entities(test_account, 'testquerytable', "Value+eq+'baz'", function(entities){
 					assert.ok(entities.length == 1, 'test_query_entities query_entities');
 				});
 
 				setTimeout(function(){
 					// clear up
-					azure.delete_table(test_account, 'testquerytable', function(val){});
+					azure.tables.delete_table(test_account, 'testquerytable', function(val){});
 				}, timeout * 2);
 					
 			}, timeout);
@@ -334,15 +334,15 @@ function test_query_entities() {
 function test_delete_entity() {
 
 
-	azure.create_table(test_account, 'deleteentitytable', function(){
-		azure.insert_entity(test_account, 'deleteentitytable', { RowKey:'1', PartitionKey: 'xyz', Value: 'foo' }, function(x) {
+	azure.tables.create_table(test_account, 'deleteentitytable', function(){
+		azure.tables.insert_entity(test_account, 'deleteentitytable', { RowKey:'1', PartitionKey: 'xyz', Value: 'foo' }, function(x) {
 			setTimeout(function(){
-				azure.delete_entity(test_account, 'deleteentitytable', 'xyz', '1', function(){
+				azure.tables.delete_entity(test_account, 'deleteentitytable', 'xyz', '1', function(){
 					
-					azure.get_entity(test_account, 'deleteentitytable', 'xyz', '1', function(entity){
+					azure.tables.get_entity(test_account, 'deleteentitytable', 'xyz', '1', function(entity){
 						assert.ok(entity == undefined, 'test_delete_entity get_entity is not undefined');
 						
-						azure.delete_table(test_account, 'deleteentitytable', function(result){});
+						azure.tables.delete_table(test_account, 'deleteentitytable', function(result){});
 					});					
 					
 				});
@@ -354,11 +354,11 @@ function test_delete_entity() {
 
 function test_delete_table(){
 
-	azure.create_table(test_account, 'deletetable', function(result){
+	azure.tables.create_table(test_account, 'deletetable', function(result){
 		//assert.ok(result);
 		setTimeout(function(){
 			
-			azure.delete_table(test_account, 'deletetable', function(result){
+			azure.tables.delete_table(test_account, 'deletetable', function(result){
 				assert.ok(result, "test_delete_table");
 			});
 		
@@ -368,17 +368,17 @@ function test_delete_table(){
 
 function test_update_entity(){
 
-	azure.create_table(test_account, 'updatetable', function(result){
+	azure.tables.create_table(test_account, 'updatetable', function(result){
 		setTimeout(function(){
 			var obj = {PartitionKey: 'xyz', RowKey: 'updatekey', Value:'A'};
-			azure.insert_entity(test_account, 'updatetable', obj, function(){
+			azure.tables.insert_entity(test_account, 'updatetable', obj, function(){
 				setTimeout(function(){
 					obj.Value = 'B';
-					azure.update_entity(test_account, 'updatetable', obj, function(){
+					azure.tables.update_entity(test_account, 'updatetable', obj, function(){
 						setTimeout(function(){
-							azure.get_entity(test_account, 'updatetable', 'xyz', 'updatekey', function(entity){
+							azure.tables.get_entity(test_account, 'updatetable', 'xyz', 'updatekey', function(entity){
 								assert.ok(entity.Value == 'B', 'test_update_entity');
-								azure.delete_table(test_account, 'updatetable',  function(val){
+								azure.tables.delete_table(test_account, 'updatetable',  function(val){
 									assert.ok(val);
 								});
 							});
@@ -413,3 +413,7 @@ function run_all_tests() {
 /******************************************************************************/
 
 run_all_tests();
+
+
+
+
