@@ -213,28 +213,28 @@ function run_blob_tests() {
 **************************/
 
 function test_list_queues() {
-	azure.list_queues(test_account, function(x) {
-		assert.ok(azure.ok(x), 'test_list_queues failed.');
+	azure.queues.list_queues(test_account, function(x) {
+		assert.ok(x instanceof Array, 'test_list_queues did not return an array.');
 	});
 }
 
 function test_create_queue() {
-	var q = 'test-create-queue'
+	var q = 'testcreate'
 	// Must ensure container of this name doesn't already exists otherwise a 209
 	// Conflict error is returned.
-	azure.delete_queue(test_account, q, function() {
-		azure.create_queue(test_account, q, function(x) {
-			assert.ok(azure.created(x), 'test_create_queue failed.');
-			azure.delete_queue(test_account, q); // Clean up.
+	azure.queues.delete_queue(test_account, q, function() {
+		azure.queues.create_queue(test_account, q, function(x) {
+			assert.ok(x, 'test_create_queue failed.');
+			azure.queues.delete_queue(test_account, q); // Clean up.
 		});
 	});
 }
 
 function test_delete_queue() {
-	var q = 'test-delete-queue';
-	azure.create_queue(test_account, q, function() {
-		azure.delete_queue(test_account, q, function(x) {
-			assert.equal(x.statusCode, 204, 'test_delete_queue failed.')
+	var q = 'testdelete';
+	azure.queues.create_queue(test_account, q, function() {
+		azure.queues.delete_queue(test_account, q, function(x) {
+			assert.ok(x, 'test_delete_queue failed.')
 		});
 	});
 }
@@ -413,7 +413,33 @@ function run_all_tests() {
 /******************************************************************************/
 
 run_all_tests();
+/*
+azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
+azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
+azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
+azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
 
 
+azure.queues.peek_messages(test_account, "foo", 3, function(x){
+	for ( var i=0, len=x.length; i<len; ++i ){
+		var message = x[i];
+		
+		azure.queues.delete_message(test_account, "foo", message, function(z){
+			assert.ok(z);
+		});
+	}
+});
 
+
+azure.queues.clear_messages(test_account, "foo", function(x){
+	assert.ok(x);
+});
+//azure.queues.list_queues(test_account, function(x){
+//	console.log(x);
+//});
+
+//azure.queues.create_queue(test_account, "bar", function(x) {
+	//assert.ok(x, 'test_create_queue failed.');
+	
+//});*/
 
