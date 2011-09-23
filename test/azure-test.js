@@ -239,11 +239,38 @@ function test_delete_queue() {
 	});
 }
 
+function test_put_get_queue() {
+
+	var q = 'putgettest';
+	azure.queues.create_queue(test_account, q, function(){
+		setTimeout(function(){
+			azure.queues.put_message(test_account, q, {Test:"Message"}, function(){
+				setTimeout(function(){
+					azure.queues.get_message(test_account, q, function(message){
+						assert.ok(message.Data.Test == "Message", "test_get_message");
+						azure.queues.delete_message(test_account, q, message, function(value){
+							assert.ok(value, "test_delete_message");
+							setTimeout(function(){
+								azure.queues.get_message(test_account, q, function(msg){
+									assert.ok(msg == undefined);
+									azure.queues.delete_queue(test_account, q);
+								});
+							}, timeout);
+						});
+					});
+				}, timeout);
+			});
+		} , timeout);
+	});
+
+}
+
 // Group
 function run_queue_tests() {
 	test_list_queues();
 	test_create_queue();
 	test_delete_queue();
+	test_put_get_queue();
 }
 
 /**************************
@@ -411,35 +438,8 @@ function run_all_tests() {
 }
 
 /******************************************************************************/
+test_put_get_queue();
 
-run_all_tests();
-/*
-azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
-azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
-azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
-azure.queues.put_message(test_account, "foo", {hello:"Hello", world:"World"}, function(){});
+//run_all_tests();
 
-
-azure.queues.peek_messages(test_account, "foo", 3, function(x){
-	for ( var i=0, len=x.length; i<len; ++i ){
-		var message = x[i];
-		
-		azure.queues.delete_message(test_account, "foo", message, function(z){
-			assert.ok(z);
-		});
-	}
-});
-
-
-azure.queues.clear_messages(test_account, "foo", function(x){
-	assert.ok(x);
-});
-//azure.queues.list_queues(test_account, function(x){
-//	console.log(x);
-//});
-
-//azure.queues.create_queue(test_account, "bar", function(x) {
-	//assert.ok(x, 'test_create_queue failed.');
-	
-//});*/
 
