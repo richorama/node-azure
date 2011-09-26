@@ -2,7 +2,7 @@
     "name": "node-azure",
     "description": "Windows Azure library for Node.js",
     "version": "0.1.0",
-    "author": "Rob Blackwell",
+    "author": "Rob Blackwell, Richard Astbury, Max Spencer",
     "dependencies": { "xml2js": ">=0.1.10"},
     "devDependencies": {}
 }
