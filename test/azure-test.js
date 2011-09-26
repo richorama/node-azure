@@ -63,7 +63,7 @@ function run_core_tests() {
 
 function test_list_containers() {
 	azure.blob.list_containers(test_account, function(x) {
-		assert.ok(azure.ok(x), 'test_list_containers failed.');
+		assert.ok(x instanceof Array, 'test_list_containers failed.');
 	});
 }
 
@@ -71,7 +71,7 @@ function test_create_container() {
 	var c = 'test-create-container';
 	azure.blob.delete_container(test_account, c, function() {
 		azure.blob.create_container(test_account, c, function(x) {
-			assert.ok(azure.created(x), 'test_create_container failed.');
+			assert.ok(x, 'test_create_container failed.');
 			azure.blob.delete_container(test_account, c) // Clean up.
 		});
 	});
@@ -81,7 +81,7 @@ function test_delete_container() {
 	var c = 'test-delete-container';
 	azure.blob.create_container(test_account, c, function() {
 		azure.blob.delete_container(test_account, c, function(x) {
-			assert.ok(azure.accepted(x), 'test_delete_container failed.');
+			assert.ok(x, 'test_delete_container failed.');
 		});
 	});
 }
@@ -90,7 +90,7 @@ function test_get_container_properties() {
 	var c = 'test-get-container-properties';
 	azure.blob.create_container(test_account, c, function() {
 		azure.blob.get_container_properties(test_account, c, function(x) {
-			assert.ok(azure.ok(x), 'test_get_container_properties failed.');
+			assert.ok(x, 'test_get_container_properties failed.');
 			azure.blob.delete_container(test_account, c); // Clean up.
 		});
 	});
@@ -100,7 +100,7 @@ function test_get_container_metadata() {
 	var c = 'test-get-container-metadata';
 	azure.blob.create_container(test_account, c, function() {
 		azure.blob.get_container_metadata(test_account, c, function(x) {
-			assert.ok(azure.ok(x), 'test_get_container_metadata failed.');
+			assert.ok(x, 'test_get_container_metadata failed.');
 			azure.blob.delete_container(test_account, c); // Clean up.
 		});
 	});
@@ -108,7 +108,7 @@ function test_get_container_metadata() {
 
 function test_set_container_metadata() {
 	var c = 'test-set-container-metadata';
-	var expected = 'onetwothree'
+	var expected = 'onetwothree';
 	azure.blob.create_container(test_account, c, set_meta);
 	
 	function set_meta() {
@@ -122,7 +122,7 @@ function test_set_container_metadata() {
 
 	function get_meta() {
 		azure.blob.get_container_metadata(test_account, c, function(x) {
-			assert.ok(azure.ok(x), 'test_set_container_metadata failed. \
+			assert.ok(x, 'test_set_container_metadata failed. \
 									Unable to get metadata.');
 			assert.equal(
 				x.headers['x-ms-meta-testing'],
@@ -139,7 +139,7 @@ function test_list_blobs() {
 	var c = 'test-list-blobs';
 	azure.blob.create_container(test_account, c, function() {
 		azure.blob.list_blobs(test_account, c, function(x) {
-			assert.ok(azure.ok(x), 'test_list_blobs failed.');
+			assert.ok(x, 'test_list_blobs failed.');
 			azure.blob.delete_container(test_account, c); // Clean up.
 		});
 	});
@@ -152,7 +152,7 @@ function test_put_blob() {
 		azure.blob.put_blob(test_account, c, azure.blob.BlockBlob, b, 
 							'Hello world!', {'Content-Type': 'text/plain'},
 					   function(x) {
-			assert.ok(azure.created(x), 'test_put_blob failed. Status code: ' + x.statusCode);
+			assert.ok(x, 'test_put_blob failed. Status code: ' + x.statusCode);
 			azure.blob.delete_container(test_account, c);
 		});
 	});
@@ -170,7 +170,7 @@ function test_get_blob() {
 	
 	function get_blob() {
 		azure.blob.get_blob(test_account, c, b, function(x) {	
-			assert.ok(azure.ok(x), 'test_get_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms). Status code: ' + x.statusCode);
+			assert.ok(x, 'test_get_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms). Status code: ' + x.statusCode);
 			azure.blob.delete_container(test_account, c);
 		});
 	}
@@ -188,7 +188,7 @@ function test_delete_blob() {
 	
 	function del_blob() {
 		azure.blob.delete_blob(test_account, c, b, function(x) {
-			assert.ok(azure.accepted(x), 'test_delete_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms). Status code: ' + x.statusCode);
+			assert.ok(x, 'test_delete_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms). Status code: ' + x.statusCode);
 			azure.blob.delete_container(test_account, c);
 		});
 	}
@@ -438,8 +438,7 @@ function run_all_tests() {
 }
 
 /******************************************************************************/
-test_put_get_queue();
 
-//run_all_tests();
 
+run_all_tests();
 
