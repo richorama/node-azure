@@ -3,7 +3,7 @@ var azure = require('../lib/azure.js');
 
 // Use this account for testing ..
 var test_account = azure.devstore_account;
-
+var wait = 1000;
 /***********************************
 * Core request functionality Tests *
 ***********************************/
@@ -161,7 +161,6 @@ function test_put_blob() {
 function test_get_blob() {
 	var c = 'test-get-blob';
 	var b = 'test-get-blob';
-	var wait = 1000;
 	azure.blob.create_container(test_account, c, function() {
 		azure.blob.put_blob(test_account, c, azure.blob.BlockBlob, b, 
 							'Hello world!', {'Content-Type': 'text/plain'},
@@ -170,7 +169,7 @@ function test_get_blob() {
 	
 	function get_blob() {
 		azure.blob.get_blob(test_account, c, b, function(x) {	
-			assert.ok(x, 'test_get_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms). Status code: ' + x.statusCode);
+			assert.ok(x, 'test_get_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms).');
 			azure.blob.delete_container(test_account, c);
 		});
 	}
@@ -179,7 +178,6 @@ function test_get_blob() {
 function test_delete_blob() {
 	var c = 'test-delete-blob';
 	var b = 'test-delete-blob';
-	var wait = 1000;
 	azure.blob.create_container(test_account, c, function() {
 		azure.blob.put_blob(test_account, c, azure.blob.BlockBlob, b, 
 							'Hello world!', {'Content-Type': 'text/plain'},
@@ -188,7 +186,7 @@ function test_delete_blob() {
 	
 	function del_blob() {
 		azure.blob.delete_blob(test_account, c, b, function(x) {
-			assert.ok(x, 'test_delete_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms). Status code: ' + x.statusCode);
+			assert.ok(x, 'test_delete_blob failed. Blob could not be found within the specified wait time (' + wait + 'ms).');
 			azure.blob.delete_container(test_account, c);
 		});
 	}
@@ -255,12 +253,12 @@ function test_put_get_queue() {
 									assert.ok(msg == undefined);
 									azure.queues.delete_queue(test_account, q);
 								});
-							}, timeout);
+							}, wait);
 						});
 					});
-				}, timeout);
+				}, wait);
 			});
-		} , timeout);
+		} , wait);
 	});
 
 }
@@ -276,7 +274,6 @@ function run_queue_tests() {
 /**************************
 * Table Service API Tests *
 **************************/
-var timeout = 500;
 
 function test_query_tables() {
 
@@ -292,7 +289,7 @@ function test_query_tables() {
 				assert.ok(found, 'test_query_tables');
 				azure.tables.delete_table(test_account, 'testquerytables', function(x){});
 			});
-		}, timeout)
+		}, wait)
 	});
 }
 
@@ -306,9 +303,9 @@ function test_insert_entity() {
 						
 						azure.tables.delete_table(test_account, 'testinserttable', function(x){});
 					});
-				}, timeout);
+				}, wait);
 			});
-		}, timeout);
+		}, wait);
 	});
 }
 
@@ -349,10 +346,10 @@ function test_query_entities() {
 				setTimeout(function(){
 					// clear up
 					azure.tables.delete_table(test_account, 'testquerytable', function(val){});
-				}, timeout * 2);
+				}, wait * 2);
 					
-			}, timeout);
-		}, timeout);
+			}, wait);
+		}, wait);
 	});
 	
 
@@ -373,7 +370,7 @@ function test_delete_entity() {
 					});					
 					
 				});
-			}, timeout);
+			}, wait);
 		});
 	});
 
@@ -389,7 +386,7 @@ function test_delete_table(){
 				assert.ok(result, "test_delete_table");
 			});
 		
-		},timeout);
+		},wait);
 	});
 }
 
@@ -409,11 +406,11 @@ function test_update_entity(){
 									assert.ok(val);
 								});
 							});
-						} ,timeout);
+						} ,wait);
 					});
-				}, timeout);
+				}, wait);
 			});
-		}, timeout);
+		}, wait);
 	});
 
 }
