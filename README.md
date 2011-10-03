@@ -10,6 +10,24 @@ Node-Azure currently supports most of methods on these storage types:
 * Table storage
 * Queues
 
+Getting Started
+---------------
+
+To include the node-azure dependency, and set up the details of your account, include these lines of code:
+
+    // include the node-azure dependency
+	var azure = require('azure');
+	
+	// every request has an account parameter, which is an object like this:
+    var account = {
+        name : "YOURACCOUNTNAME",
+        key : "YOURACCOUNTKEY",
+        blob_storage_url : "https://YOURACCOUNTNAME.blob.core.windows.net",
+        table_storage_url : "https://YOURACCOUNTNAME.table.core.windows.net",
+        queue_storage_url : "https://YOURACCOUNTNAME.queue.core.windows.net"
+    }
+
+
 Blob Examples
 -------------
 
